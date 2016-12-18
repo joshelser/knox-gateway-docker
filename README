@@ -1,0 +1,28 @@
+## Docker image for the Apache Knox Gateway
+
+### Prerequisites
+
+You need to build the Knox master secret file and gateway SSL certificate. You can do this from
+a Knox installation. You need to do this yourself as it relies on the hostname of the system
+you wish to use.
+
+```
+$ cd knox-0.10.0
+$ ./bin/knoxcli.sh create-master --force
+$ ./bin/knoxcli.sh create-cert --hostname $(hostname -f)
+```
+
+Do *not* use a secure password when creating the master secret (step 2) as
+it is only obscured.
+
+This will create three files which need to be later referenced.
+
+```
+$ cp data/security/master knox-gateway-docker.git
+$ cp data/security/keystores/gateway.jks knox-gateway-docker.git/keystores
+$ cp data/security/keystores/__gateway-credentials.jceks knox-gateway-docker.git/keystores
+```
+
+## Running the container
+
+docker run -v /Users/jelser/projects/knox-gateway-docker.git/keystores/:/knox-0.10.0/data/security/keystores -v /Users/jelser/projects/knox-gateway-docker.git/master:/knox-0.10.0/data/security/master it joshelser/knox-gateway:0.10.0
